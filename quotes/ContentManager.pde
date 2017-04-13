@@ -1,5 +1,8 @@
 class ContentManager {
   PImage[] allFrames;
+  PGraphics mainCanvas;
+  PFont VCR;
+  
   int frame;
   quotes mainApplet;
   
@@ -20,8 +23,10 @@ class ContentManager {
     "I fuck up when people are depending on me the most."
   };
 
-  ContentManager(quotes applet) {
+  ContentManager(quotes applet, PGraphics canvas) {
     mainApplet = applet;
+    mainCanvas = canvas;
+    VCR = createFont("VCR_OSD_MONO.ttf", 32);
     selectRandomGif();
   }
   
@@ -38,7 +43,7 @@ class ContentManager {
   }
    
   void displayContent() {
-    if (countSinceSwap <= 20) {
+    if (countSinceSwap <= 50) {
       displayGif();
     } else {
       displayText();
@@ -49,18 +54,19 @@ class ContentManager {
   
   void displayGif() {    
     frame = frame % allFrames.length;
-    image(allFrames[frame], 0, 0, width, height);
+    mainCanvas.image(allFrames[frame], 0, 0, width, height);
     frame += 1;
   }
   
   void displayText() {
     //Set the background color   
-    background(0);
+    mainCanvas.background(0);
     
     //Display the text
-    textSize(32);
-    fill(255, 255, 255);
-    text(quotes[quotesIndex], 0.15*width, 0.3*height, 0.75*width, 0.7*height);
+    mainCanvas.textFont(VCR);
+    mainCanvas.textSize(32);
+    mainCanvas.fill(255, 255, 255);
+    mainCanvas.text(quotes[quotesIndex], 0.15*width, 0.3*height, 0.75*width, 0.7*height);
   }
   
 } 
