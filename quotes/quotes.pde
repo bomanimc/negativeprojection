@@ -1,7 +1,6 @@
 import java.util.*;
 import gifAnimation.*;
 ContentManager cm;
-RandomGif rg;
 
 void setup() {
   size(600, 600, JAVA2D);
@@ -12,7 +11,6 @@ void setup() {
   textFont(VCR);
   
   cm = new ContentManager(this);
-  rg = new RandomGif(this);
 }
 
 void draw() {
