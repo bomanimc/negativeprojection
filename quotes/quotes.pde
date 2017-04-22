@@ -25,7 +25,6 @@ void setup() {
 }
 
 void draw() {
-  int fps = leap.getFrameRate();
   for (Hand hand : leap.getHands()) {
     handGrab = hand.getGrabStrength();
   }

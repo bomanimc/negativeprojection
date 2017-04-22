@@ -1,9 +1,12 @@
 import java.util.*;
 import gifAnimation.*;
 import codeanticode.syphon.*;
+import de.voidplus.leapmotion.*;
 
+LeapMotion leap;
 PGraphics canvas;
 SyphonServer server;
+float handGrab;
 
 MovingRectangles rect1, rect2, rect3, rect4, rect5;
 
@@ -17,7 +20,8 @@ void settings() {
 void setup() {
   canvas = createGraphics(600, 600, P3D);
   server = new SyphonServer(this, "Processing Syphon Server");
- 
+  leap = new LeapMotion(this).allowGestures();
+  
   frameRate(100);
   
   rect1 = new MovingRectangles(canvas, 0);
@@ -28,6 +32,25 @@ void setup() {
 }
 
 void draw() {
+  for (Hand hand : leap.getHands()) {
+    handGrab = hand.getGrabStrength();
+  }
+  
+  if (handGrab == 1) {
+    rect1.hide();
+    rect2.hide();
+    rect3.hide();
+    rect4.hide();
+    rect5.hide();  
+  }
+  else {
+    rect1.unhide();
+    rect2.unhide();
+    rect3.unhide();
+    rect4.unhide();
+    rect5.unhide();
+  }
+  
   canvas.beginDraw();
   canvas.background(0);
   
