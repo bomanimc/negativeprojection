@@ -1,16 +1,13 @@
 import java.util.*;
 import gifAnimation.*;
 import codeanticode.syphon.*;
-import de.voidplus.leapmotion.*;
+import http.requests.*;
 
-LeapMotion leap;
 PGraphics canvas;
 SyphonServer server;
-float handGrab;
+int handState;
 
 MovingRectangles rect1, rect2, rect3, rect4, rect5;
-
-int movement = 0;
 
 void settings() {
   size(600, 600, P3D);
@@ -20,7 +17,6 @@ void settings() {
 void setup() {
   canvas = createGraphics(600, 600, P3D);
   server = new SyphonServer(this, "Processing Syphon Server");
-  leap = new LeapMotion(this).allowGestures();
   
   frameRate(100);
   
@@ -32,11 +28,14 @@ void setup() {
 }
 
 void draw() {
-  for (Hand hand : leap.getHands()) {
-    handGrab = hand.getGrabStrength();
+  if (frameCount % 5 == 0) {
+    GetRequest get = new GetRequest("http://localhost:3000/grip");
+    get.send();
+    JSONObject response = parseJSONObject(get.getContent()); 
+    handState = response.getInt("handState");
   }
   
-  if (handGrab == 1) {
+  if (handState == 1) {
     rect1.hide();
     rect2.hide();
     rect3.hide();
@@ -63,6 +62,4 @@ void draw() {
   canvas.endDraw();
   image(canvas, 0, 0);
   server.sendImage(canvas);
-  
-  movement = (movement + 1) % height;
 }

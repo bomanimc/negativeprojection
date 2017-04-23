@@ -1,12 +1,11 @@
 import java.util.*;
 import gifAnimation.*;
 import codeanticode.syphon.*;
-import de.voidplus.leapmotion.*;
+import http.requests.*;
 
-LeapMotion leap;
 PGraphics canvas;
 SyphonServer server;
-float handGrab;
+int handState;
 
 ContentManager cm;
 
@@ -18,19 +17,21 @@ void settings() {
 void setup() {
   canvas = createGraphics(600, 600, P3D);
   server = new SyphonServer(this, "Processing Syphon Server");
-  leap = new LeapMotion(this).allowGestures();
   cm = new ContentManager(this, canvas);
   
   frameRate(100); 
 }
 
-void draw() {
-  for (Hand hand : leap.getHands()) {
-    handGrab = hand.getGrabStrength();
+void draw() {  
+  if (handState == 1) {
+    cm.swapQuote();
   }
   
-  if (handGrab == 1) {
-    cm.swapQuote();
+  if (frameCount % 5 == 0) {
+    GetRequest get = new GetRequest("http://localhost:3000/grip");
+    get.send();
+    JSONObject response = parseJSONObject(get.getContent()); 
+    handState = response.getInt("handState");
   }
   
   canvas.beginDraw();
@@ -41,20 +42,4 @@ void draw() {
   canvas.endDraw();
   image(canvas, 0, 0);
   server.sendImage(canvas);
-}
-
-void leapOnInit() {
-  //println("Leap Motion Init");
-}
-void leapOnConnect() {
-  println("Leap Motion Connect");
-}
-void leapOnFrame() {
-  //println("Leap Motion Frame");
-}
-void leapOnDisconnect() {
-  println("Leap Motion Disconnect");
-}
-void leapOnExit() {
-  //println("Leap Motion Exit");
 }
